@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.amrsmobileforms">
+
+	<class name="Economic" table="mobileformentry_economic">
+
+		<id name="economicId" type="int" column="economic_id" 
+			unsaved-value="0"> 
+			<generator class="native" />
+		</id>
+
+		<many-to-one name="household" class="MobileFormHousehold" not-null="true">
+			<column name="household_id" />
+		</many-to-one>
+		
+		<many-to-one name="valueQuestion" class="EconomicObject" not-null="true">
+			<column name="value_question" />
+		</many-to-one>
+		
+		<property name="valueNumeric" type="double" column="value_numeric" />
+		
+		<property name="valueText" type="java.lang.String" column="value_text" />
+		
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true">
+			<column name="created_by" />
+		</many-to-one>
+
+		<property name="dateCreated" type="java.util.Date" 
+			column="date_created" not-null="true" length="19" />
+
+	</class>
+</hibernate-mapping>

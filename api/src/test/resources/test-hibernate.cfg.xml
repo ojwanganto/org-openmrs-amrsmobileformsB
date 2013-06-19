@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+        <mapping resource="Economic.hbm.xml" />
+        <mapping resource="EconomicConceptMap.hbm.xml" />
+        <mapping resource="EconomicObject.hbm.xml" />
+        <mapping resource="HouseholdMember.hbm.xml" />
+        <mapping resource="MobileFormEntryError.hbm.xml" />
+        <mapping resource="MobileFormHousehold.hbm.xml" />
+        <mapping resource="Survey.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>

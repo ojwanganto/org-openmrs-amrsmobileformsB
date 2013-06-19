@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.amrsmobileforms">
+
+	<class name="EconomicConceptMap" table="mobileformentry_economic_concept_map">
+
+		<id name="economicConceptMapId" type="int" column="economic_concept_map_id" 
+			unsaved-value="0"> 
+			<generator class="native" />
+		</id>
+
+		<many-to-one name="economic" class="EconomicObject" not-null="true">
+			<column name="economic_object_id" />
+		</many-to-one>
+		
+		<many-to-one name="concept" class="org.openmrs.Concept" not-null="true">
+			<column name="concept_id" />
+		</many-to-one>
+
+		<!-- BaseOpenmrsMetadata properties -->
+
+		<property name="uuid" type="java.lang.String"
+			column="uuid" length="38" unique="true" />
+
+		<many-to-one name="creator" class="org.openmrs.User"
+			not-null="true">
+			<column name="creator" />
+		</many-to-one>
+		<property name="dateCreated" type="java.util.Date"
+			column="date_created" not-null="true" length="19" />
+		
+		<many-to-one name="changedBy" class="org.openmrs.User"
+			not-null="true">
+			<column name="changed_by" />
+		</many-to-one>
+		<property name="dateChanged" type="java.util.Date"
+			column="date_changed" length="19" />
+
+		<property name="retired" type="java.lang.Boolean"
+			column="retired" length="1" not-null="true"/>
+		<many-to-one name="retiredBy" class="org.openmrs.User">
+			<column name="retired_by" />
+		</many-to-one>
+		<property name="dateRetired" type="java.util.Date"
+			column="date_retired" length="19" />
+		<property name="retireReason" type="java.lang.String"
+			column="retire_reason" length="255" /> 
+				
+	</class>
+</hibernate-mapping>

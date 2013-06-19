@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.openmrs.module</groupId>
+		<artifactId>amrsmobileforms</artifactId>
+		<version>1.0.3-HHM-SNAPSHOT</version>
+	</parent>
+	<groupId>org.openmrs.module</groupId>
+	<artifactId>amrsmobileforms-api</artifactId>
+	<packaging>jar</packaging>
+	<name>AMRS Mobile Forms API</name>
+	<description>API project for AMRS Mobile Forms</description>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>  
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.kxml</groupId>
+			<artifactId>kxml2</artifactId>
+		</dependency>
+
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jzlib</artifactId>
+        </dependency>
+
+        <dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>household-api</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>xforms</artifactId>
+		</dependency>
+
+		<!-- Begin OpenMRS core -->
+
+		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+			<type>jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.test</groupId>
+			<artifactId>openmrs-test</artifactId>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.4.10</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- End OpenMRS core -->
+		
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+	</build>
+
+</project>

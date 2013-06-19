@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.amrsmobileforms">
+
+	<class name="MobileFormEntryError" table="mobileformentry_error">
+
+		<id name="mobileFormEntryErrorId" type="int" column="mobile_formentry_error_id" 
+			unsaved-value="0">
+				<generator class="native" />
+		</id>
+
+        <property name="providerId" type="java.lang.String"
+                  column="provider_id" length="20" />
+        <property name="locationId" type="java.lang.String"
+                  column="location_id" length="20" />
+
+        <property name="formName" type="java.lang.String"
+			column="form_name" not-null="true" length="16777215" />
+
+		<property name="error" type="java.lang.String" length="255"
+			column="error" not-null="true" />
+
+		<property name="errorDetails" type="java.lang.String" length="2048"
+			column="error_details" />
+		
+		<property name="comment" type="java.lang.String" length="255"
+			column="comment"/>
+		
+		<many-to-one name="commentedBy" class="org.openmrs.User" not-null="true">
+			<column name="commented_by" />
+		</many-to-one>
+
+		<property name="dateCommented" type="java.util.Date" 
+			column="date_commented" length="19" />
+			
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true">
+			<column name="creator" />
+		</many-to-one>
+
+		<property name="dateCreated" type="java.util.Date" 
+			column="date_created" not-null="true" length="19" />
+
+	</class>
+</hibernate-mapping>

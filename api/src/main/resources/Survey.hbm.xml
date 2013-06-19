@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.amrsmobileforms">
+
+	<class name="Survey" table="mobileformentry_household_survey">
+
+		<id name="householdSurveyId" type="int" column="household_survey_id" 
+			unsaved-value="0"> 
+			<generator class="native" />
+		</id>
+		
+		<many-to-one name="household" class="MobileFormHousehold" not-null="true">
+			<column name="household_id" />
+		</many-to-one>
+		
+		<property name="surveyIdentifier" type="java.lang.String" 
+			column="survey_identifier" length="20" />
+			
+		<property name="providerId" type="java.lang.String" 
+			column="provider_id" length="20" />	
+			
+		<property name="teamId" type="java.lang.String" 
+			column="team_id" length="10" />
+			
+		<property name="allowedIn" type="java.lang.String" 
+			column="allowed_in" length="20" />
+		
+		<property name="returnDate" type="java.util.Date" 
+			column="return_date" length="20" />
+		
+		<property name="startTime" type="java.sql.Timestamp" 
+			column="start_time" length="25" />
+		
+		<property name="endTime" type="java.sql.Timestamp" 
+			column="end_time" length="25" />
+		
+		<property name="deviceId" type="java.lang.String" 
+			column="device_id" length="20" />
+			
+		<property name="subscriberId" type="java.lang.String" 
+			column="subscriber_id" length="20" />
+		
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true">
+			<column name="created_by" />
+		</many-to-one>
+
+		<property name="dateCreated" type="java.util.Date" 
+			column="date_created" not-null="true" length="19" />
+
+	</class>
+</hibernate-mapping>

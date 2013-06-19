@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<mobileformentry_household household_id="1" household_identifier="12345678" village="" sublocation="" location="" division="" district="" gps_location="N40º32'195&quot; W80º10'286&quot;" adults="1" children="2" adults_eligible="4" created_by="2" date_created="2012-04-13 14:17:31" />
+
+	<mobileformentry_household_survey household_survey_id="1" household_id="1" survey_identifier="" provider_id="2-6" team_id="team1" allowed_in="accepted" device_id="101" subscriber_id="" start_time="2010-01-01 10:09:10" end_time="2010-01-01 10:10:10" created_by="2" date_created="2012-04-13 14:17:31" />
+
+	<mobileformentry_economic economic_id="1" household_id="1" value_question="5" value_numeric="7" created_by="2" date_created="2012-04-13 14:17:31" />
+	<mobileformentry_economic economic_id="2" household_id="1" value_question="4" value_numeric="6" created_by="2" date_created="2012-04-13 14:17:31" />
+	<mobileformentry_economic economic_id="3" household_id="1" value_question="6" value_numeric="0" created_by="2" date_created="2012-04-13 14:17:31" />
+	<mobileformentry_economic economic_id="4" household_id="1" value_question="9" value_text="" created_by="2" date_created="2012-04-13 14:17:31" />
+	<mobileformentry_economic economic_id="5" household_id="1" value_question="7" value_numeric="1" created_by="2" date_created="2012-04-13 14:17:31" />
+	<mobileformentry_economic economic_id="6" household_id="1" value_question="1" value_numeric="3" created_by="2" date_created="2012-04-13 14:17:31" />
+	<mobileformentry_economic economic_id="7" household_id="1" value_question="3" value_numeric="5" created_by="2" date_created="2012-04-13 14:17:31" />
+	<mobileformentry_economic economic_id="8" household_id="1" value_question="8" value_numeric="2" created_by="2" date_created="2012-04-13 14:17:31" />
+	<mobileformentry_economic economic_id="9" household_id="1" value_question="2" value_numeric="4" created_by="2" date_created="2012-04-13 14:17:31" />
+
+	<mobileformentry_economic_object object_id="1" object_name="land_owned" object_type="numeric" created_by="1" date_created="2009-09-15 22:22:00" />
+	<mobileformentry_economic_object object_id="2" object_name="cows_owned" object_type="numeric" created_by="1" date_created="2009-09-15 22:22:00" />
+	<mobileformentry_economic_object object_id="3" object_name="goats_owned" object_type="numeric" created_by="1" date_created="2009-09-15 22:22:00" />
+	<mobileformentry_economic_object object_id="4" object_name="sheep_owned" object_type="numeric" created_by="1" date_created="2009-09-15 22:22:00" />
+	<mobileformentry_economic_object object_id="5" object_name="children_in_household" object_type="numeric" created_by="1" date_created="2009-09-15 22:22:00" />
+	<mobileformentry_economic_object object_id="6" object_name="children_in_school" object_type="numeric" created_by="1" date_created="2009-09-15 22:22:00" />
+	<mobileformentry_economic_object object_id="7" object_name="bednets_owned" object_type="numeric" created_by="1" date_created="2009-09-15 22:22:00" />
+	<mobileformentry_economic_object object_id="8" object_name="bednets_given" object_type="numeric" created_by="1" date_created="2009-09-15 22:22:00" />
+	<mobileformentry_economic_object object_id="9" object_name="bednet_voucher" object_type="text" created_by="1" date_created="2009-09-15 22:22:00" />
+</dataset>

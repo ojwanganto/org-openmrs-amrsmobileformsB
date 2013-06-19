@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.amrsmobileforms">
+
+	<class name="MobileFormHousehold" table="mobileformentry_household">
+
+		<id name="householdId" type="int" column="household_id" 
+			unsaved-value="0">
+				<generator class="native" />
+		</id>
+
+		<property name="householdIdentifier" type="java.lang.String" 
+			column="household_identifier" not-null="true" length="50" />
+		
+		<property name="village" type="java.lang.String" 
+			column="village" not-null="true" length="50" />
+		
+		<property name="sublocation" type="java.lang.String" 
+			column="sublocation" length="50" />
+		
+		<property name="location" type="java.lang.String" 
+			column="location" length="50" />
+			
+		<property name="division" type="java.lang.String" 
+			column="division" length="50" />
+			
+		<property name="district" type="java.lang.String" 
+			column="district" length="50" />
+			
+		<property name="gpsLocation" type="java.lang.String" 
+			column="gps_location" length="50"/>
+		
+		<property name="adults" type="int" column="adults" />
+		
+		<property name="children" type="int" column="children" />
+		
+		<property name="adultsEligible" type="int" column="adults_eligible" />
+		
+		<property name="childrenEligible" type="int" column="children_eligible" />
+		
+		<many-to-one name="househead" class="org.openmrs.Person" not-null="true">
+			<column name="household_head_id" />
+		</many-to-one>
+			
+		<many-to-one name="changedBy" class="org.openmrs.User" not-null="true">
+			<column name="changed_by" />
+		</many-to-one>
+		
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true">
+			<column name="created_by" />
+		</many-to-one>
+
+		<property name="dateCreated" type="java.util.Date" 
+			column="date_created" not-null="true" length="19" />
+		
+		<set name="economics" lazy="true" cascade="all-delete-orphan,evict" inverse="true" access="field" order-by="economic_id asc">
+			<key column="household_id" not-null="true" />
+			<one-to-many class="Economic" />
+		</set>
+		
+		<set name="surveys" lazy="true" cascade="all-delete-orphan,evict" inverse="true" access="field" order-by="household_survey_id asc">
+			<key column="household_id" not-null="true" />
+			<one-to-many class="Survey" />
+		</set>
+		
+	</class>
+</hibernate-mapping>

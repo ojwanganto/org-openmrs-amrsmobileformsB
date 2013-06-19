@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+	<!-- See http://wiki.openmrs.org/display/docs/Module+liquibase+File for 
+		documentation on this file. See http://www.liquibase.org/manual/home#available_database_refactorings 
+		for a list of supported elements and attributes -->
+		
+	<changeSet id="mobileformentry-2012-04-12-10:10" author="jkeiper">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="mobileformentry_economic_concept_map" />
+			</not>
+		</preConditions>
+		<comment>
+			Create Economic Concept Map table
+		</comment>
+			
+		<createTable tableName="mobileformentry_economic_concept_map">
+			<column autoIncrement="true" name="economic_concept_map_id" type="int">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			
+			<column name="economic_object_id" type="int"/>
+			<column name="concept_id" type="int"/>
+			
+			<column defaultValueNumeric="0" name="retired" type="tinyint">
+				<constraints nullable="false"/>
+			</column>
+			<column defaultValueNumeric="0" name="creator" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column defaultValueDate="0002-11-30T00:00:00.0" name="date_created" type="DATETIME">
+				<constraints nullable="false"/>
+			</column>
+			<column name="changed_by" type="int"/>
+			<column name="date_changed" type="DATETIME"/>
+			<column name="retired_by" type="int"/>
+			<column name="date_retired" type="DATETIME"/>
+			<column name="retire_reason" type="varchar(255)"/>
+			<column name="uuid" type="char(38)" />
+		</createTable>
+
+		<addForeignKeyConstraint baseColumnNames="economic_object_id" baseTableName="mobileformentry_economic_concept_map" 
+			constraintName="economic_for_economic_concept_map" deferrable="false" initiallyDeferred="false" 
+			referencedColumnNames="object_id" referencedTableName="mobileformentry_economic_object"/>
+		<addForeignKeyConstraint baseColumnNames="concept_id" baseTableName="mobileformentry_economic_concept_map" 
+			constraintName="concept_for_economic_concept_map" deferrable="false" initiallyDeferred="false" 
+			referencedColumnNames="concept_id" referencedTableName="concept"/>
+		<addForeignKeyConstraint baseColumnNames="creator" baseTableName="mobileformentry_economic_concept_map" 
+			constraintName="user_who_created_economic_concept_map" deferrable="false" initiallyDeferred="false" 
+			referencedColumnNames="user_id" referencedTableName="users"/>
+		<addForeignKeyConstraint baseColumnNames="changed_by" baseTableName="mobileformentry_economic_concept_map" 
+			constraintName="user_who_changed_economic_concept_map" deferrable="false" initiallyDeferred="false" 
+			referencedColumnNames="user_id" referencedTableName="users"/>
+		<addForeignKeyConstraint baseColumnNames="retired_by" baseTableName="mobileformentry_economic_concept_map" 
+			constraintName="user_who_retired_economic_concept_map" deferrable="false" initiallyDeferred="false" 
+			referencedColumnNames="user_id" referencedTableName="users"/>
+			
+	</changeSet>
+
+    <changeSet author="akwatuha" id="Mobileformentry-22-02-2013:09:00">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="mobileformentry_error" columnName="provider_id"/>
+            </not>
+
+        </preConditions>
+        <comment>Creating a column that will hold identity of whoever created the household or individual</comment>
+        <addColumn tableName="mobileformentry_error">
+            <column name="provider_id" type="varchar(20)" defaultValue="null"  />
+
+        </addColumn>
+    </changeSet>
+    <changeSet author="akwatuha" id="Mobileformentry-22-02-2013:12:40">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="mobileformentry_error" columnName="location_id"/>
+            </not>
+
+        </preConditions>
+        <comment>Creating a column that will hold the location of the household or individual</comment>
+        <addColumn tableName="mobileformentry_error">
+            <column name="location_id" type="varchar(20)" defaultValue="null"  />
+
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>		

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqldiff PUBLIC "-//OpenMRS//DTD OpenMRS SQL Diff Config 1.0//EN" "http://resources.openmrs.org/doctype/sqldiff-1.0.dtd">
+
+<sqldiff version="1.0">
+	<help>
+		USE:
+			The diffs are ordered by datamodel version number.
+			The script can be run in a top down fashion and is
+			expected to not failor overwrite old data
+		
+		EXPECT:
+			- "use business-database-name;" was called prior to
+			   calling this script
+	</help>
+	
+	<diff>
+		<version>1.0.0</version>
+		<author>Samuel Mbugua</author>
+		<date>Sept 15th 2009</date>
+		<description>
+			Creates all required tables and the processor tasks
+		</description>
+		<sql>
+			INSERT INTO
+				scheduler_task_config
+			 (
+				name, description, schedulable_class, start_time, repeat_interval, start_on_startup, created_by, date_created,uuid
+			) 
+			VALUES 
+			(
+				'Process Mobile Forms',
+				'This class calls the mobile form processor to process all forms in the mobile form entry queue.',
+				'org.openmrs.module.amrsmobileforms.ProcessMobileFormTask',
+				'2009-09-15 22:22:00',
+				30,
+				1,
+				1,
+				'2009-09-15 22:22:00',
+				uuid()
+			),
+			(
+				'Mobile Forms Create Relationships Task',
+				'This class calls the mobile form Relationships processor to create relationships.',
+				'org.openmrs.module.amrsmobileforms.ProcessRelationshipsTask',
+				'2009-09-15 22:22:00',
+				30,
+				1,
+				1,
+				'2009-09-15 22:22:00',
+				uuid()
+			);
+			
+			CREATE TABLE IF NOT EXISTS `mobileformentry_household` (
+			  `household_id` int(11) NOT NULL auto_increment,
+			  `household_identifier` varchar(50) NOT NULL,
+			  `village` varchar(50) NOT NULL,
+			  `sublocation` varchar(50),
+			  `location` varchar(50),
+			  `division` varchar(50),
+			  `district` varchar(50),
+			  `gps_location` varchar(50),
+			  `adults` int(11) default '0',
+			  `children` int(11) default '0',
+			  `adults_eligible` int(11) default '0',
+			  `children_eligible` int(11) default '0',
+			  `household_head_id` int(11) default NULL,
+			  `created_by` int(11) NOT NULL default '0',
+			  `changed_by` int(11) default '0',
+			  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+			  PRIMARY KEY  (`household_id`),
+			  KEY `Household Head` (`household_head_id`),
+			  CONSTRAINT `Household Head` FOREIGN KEY (`household_head_id`) REFERENCES `person` (`person_id`),
+			  KEY `User who created household` (`created_by`),
+			  CONSTRAINT `User who created household` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`),
+			  KEY `User who changed household` (`changed_by`),
+			  CONSTRAINT `User who changed household` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			CREATE TABLE IF NOT EXISTS `mobileformentry_economic` (
+			  `economic_id` int(11) NOT NULL auto_increment,
+			  `household_id` int(11) NOT NULL,
+			  `value_question` int(11) NOT NULL,
+			  `value_numeric` double,
+			  `value_text` varchar(50),
+			  `created_by` int(11) NOT NULL default '0',
+			  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+			  PRIMARY KEY  (`economic_id`),
+			  KEY `User who entered economic data` (`created_by`),
+			  CONSTRAINT `User who entered economic data` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`),
+			  KEY `Economic household surveyed` (`household_id`),
+			  CONSTRAINT `Economic household surveyed` FOREIGN KEY (`household_id`) REFERENCES `mobileformentry_household` (`household_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			CREATE TABLE IF NOT EXISTS `mobileformentry_economic_object` (
+			  `object_id` int(11) NOT NULL auto_increment,
+			  `object_name` varchar(50) NOT NULL,
+			  `object_type` varchar(20),
+			  `created_by` int(11) NOT NULL default '0',
+			  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+			  PRIMARY KEY  (`object_id`),
+			  KEY `User who created economic object` (`created_by`),
+			  CONSTRAINT `User who created economic object` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			INSERT INTO
+				mobileformentry_economic_object
+			 (
+				object_name, object_type, created_by, date_created
+			) 
+			VALUES 
+			('land_owned','numeric',1,'2009-09-15 22:22:00'),
+			('cows_owned','numeric',1,'2009-09-15 22:22:00'),
+			('goats_owned','numeric',1,'2009-09-15 22:22:00'),
+			('sheep_owned','numeric',1,'2009-09-15 22:22:00'),
+			('children_in_household','numeric',1,'2009-09-15 22:22:00'),
+			('children_in_school','numeric',1,'2009-09-15 22:22:00'),
+			('bednets_owned','numeric',1,'2009-09-15 22:22:00'),
+			('bednets_given','numeric',1,'2009-09-15 22:22:00'),
+			('bednet_voucher','text',1,'2009-09-15 22:22:00');
+			
+			CREATE TABLE IF NOT EXISTS `mobileformentry_error` (
+			  `mobile_formentry_error_id` int(11) NOT NULL auto_increment,
+			  `form_name` mediumtext NOT NULL,
+              `error` varchar(255) NOT NULL default '',
+			  `error_details` text,
+			  `comment` varchar(255) default '',
+			  `commented_by` int(11) default '0',
+			  `date_commented` datetime default NULL,
+			  `creator` int(11) NOT NULL default '0',
+			  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+			  PRIMARY KEY  (`mobile_formentry_error_id`),
+			  KEY `User who created mobile_formentry_error` (`creator`),
+			  CONSTRAINT `User who created mobile_formentry_error` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
+			  KEY `User who commented on this error` (`commented_by`),
+			  CONSTRAINT `User who commented on this error` FOREIGN KEY (`commented_by`) REFERENCES `users` (`user_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			CREATE TABLE IF NOT EXISTS `mobileformentry_household_survey` (
+			  `household_survey_id` int(11) NOT NULL auto_increment,
+			  `household_id` int(11) NOT NULL,
+			  `survey_identifier` varchar(20),
+			  `provider_id` varchar(20),
+			  `team_id` varchar(10),
+			  `allowed_in` varchar(20),
+			  `device_id` varchar(20),
+			  `subscriber_id` varchar(20),
+			  `start_time` timestamp NOT NULL default '0000-00-00 00:00:00.000',
+			  `end_time` timestamp NOT NULL default '0000-00-00 00:00:00.000',
+			  `return_date` datetime,
+			  `created_by` int(11) NOT NULL default '0',
+			  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+			  PRIMARY KEY  (`household_survey_id`),
+			  KEY `User who entered survey` (`created_by`),
+			  CONSTRAINT `User who entered survey` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`),
+			  KEY `Household surveyed` (`household_id`),
+			  CONSTRAINT `Household surveyed` FOREIGN KEY (`household_id`) REFERENCES `mobileformentry_household` (`household_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+			
+			CREATE TABLE IF NOT EXISTS `mobileformentry_household_member` (
+				`household_member_id` int(11) NOT NULL auto_increment,
+				`household_id` int(11) NOT NULL,
+				PRIMARY KEY (`household_member_id`),
+				KEY `Household Member` (`household_member_id`),
+			  	CONSTRAINT `Household Member` FOREIGN KEY (`household_member_id`) REFERENCES `patient` (`patient_id`),
+			 	KEY `Household which member belongs` (`household_id`),
+			  	CONSTRAINT `Household which member belongs` FOREIGN KEY (`household_id`) REFERENCES `mobileformentry_household` (`household_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			
+		</sql>
+	</diff>
+
+</sqldiff>
