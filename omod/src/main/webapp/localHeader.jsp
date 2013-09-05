@@ -1,8 +1,9 @@
 <ul id="menu">
+    <openmrs:hasPrivilege privilege="View Mobile Form Entry Properties">
 	<li class="first">
 		<a href="${pageContext.request.contextPath}/admin"><spring:message code="admin.title.short"/></a>
 	</li>
-	
+    </openmrs:hasPrivilege>
 	<openmrs:hasPrivilege privilege="View Mobile Form Entry Properties">
 		<li <c:if test='<%= request.getRequestURI().contains("amrsmobileforms/properties") %>'>class="active"</c:if>>
 			<a href="${pageContext.request.contextPath}/module/amrsmobileforms/propertiesPage.form">

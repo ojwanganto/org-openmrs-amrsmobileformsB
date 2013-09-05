@@ -401,7 +401,7 @@ function buildTextArea(label, id) {
     return row;
 }
 
-function buildFormViewRow(label,formxml) {
+function buildFormViewRow(label,id,formxml) {
     var row = document.createElement("tr");
     var cell = document.createElement("th");
     var cell2 = document.createElement("td");
@@ -410,7 +410,9 @@ function buildFormViewRow(label,formxml) {
     var button = document.createElement("input");
     button.setAttribute("type", "button");
     button.setAttribute("value", "Show Form");
-    button.setAttribute("id", "btnshowformxml");
+    button.setAttribute("id",id);
+    button.setAttribute("onclick",ShowXformDiv());
+
 
 
     cell.appendChild(celllabel);
@@ -445,34 +447,40 @@ function fillFormXmlDiv(xmldata){
 
 
 
-      ///Add jquery
-    $j("btnshowformxml").live("click", function () {
 
-       // $j("#formviewdialog").html(xmldata);
-       alert('Jkied') ;
-        $j("#formviewdialog").dialog({
-            height: 600,
-            width: 1000,
-
-            modal: false,
-            buttons: {
-                "Close": function () {
-
-                    alert('Closed') ;
-                },
-                close: closeFunction,
-                Cancel: function () {
-                    $j(this).dialog("close");
-                }
-            }
-        });
-
-
-        });
-
-
-        //
 }
+function ShowXformDiv() {
+
+    alert("shown")
+}
+///Add jquery
+$j("#btnshowformxml").on("click", function (e) {
+    e.preventDefault();
+    // $j("#formviewdialog").html(xmldata);
+    alert('Jkied') ;
+    $('#formviewdialog').modal('show');
+    $j("#formviewdialog").dialog({
+        height: 600,
+        width: 1000,
+
+        modal: false,
+        buttons: {
+            "Close": function () {
+
+                alert('Closed') ;
+            },
+            close: closeFunction,
+            Cancel: function () {
+                $j(this).dialog("close");
+            }
+        }
+    });
+
+
+});
+
+
+//
 /* Displays a summary dialog window with error details plus a provision to comment on an error
  */
 
@@ -505,11 +513,11 @@ function generate_table(data, bodyDiv, option) {
 
     var errdetails = buildRowWithElement("Error Details", data.errorDetails);
 
-    var formname = buildRowWithElement("XML Form", data.formName);
+    var formname = buildRowWithFormXml("XML Form", data.formName);
 
     var comment = buildTextArea("Comment", "comment");
 
-    var comment2 =buildFormViewRow("View Form", "SubmittedFormXml",data.formName)
+
 
     tblBody.appendChild(pname);
     tblBody.appendChild(pid);
@@ -530,7 +538,7 @@ function generate_table(data, bodyDiv, option) {
     tblBody.appendChild(formname);
 
     tblBody.appendChild(comment);
-    tblBody.appendChild(comment2);
+
 
     tbl.appendChild(tblBody);
 
@@ -575,7 +583,7 @@ function generate_ResolveError_table(data) {
     var totaleligible = buildRow("Total Eligible", data.totalEligible);
     var providerId = buildRow("Provider Id", data.providerId);
     var errdetails = buildRowWithElement("Error Details", data.errorDetails);
-    var formname = buildRowWithElement("XML Form", data.formName);
+    var formname = buildRowWithFormXml("XML Form", data.formName);
 
     tblBody.appendChild(comment);
     tblBody.appendChild(commentedBy);
@@ -598,6 +606,24 @@ function generate_ResolveError_table(data) {
     tbl.appendChild(tblBody);
     body.appendChild(tbl);
     tbl.setAttribute("border", "0");
+}
+
+function buildRowWithFormXml(label, tdvalue) {
+
+    var row = document.createElement("tr");
+    var cell = document.createElement("th");
+    var cell2 = document.createElement("td");
+    var div = document.createElement("div");
+    div.setAttribute('style', 'height: 200px; overflow-y: scroll; border: 1px solid #BBB;');
+
+    var celllabel = document.createTextNode(label + ": ");
+    var cellval = document.createTextNode(tdvalue);
+    div.appendChild(cellval);
+    cell.appendChild(celllabel);
+    cell2.appendChild(div);
+    row.appendChild(cell);
+    row.appendChild(cell2);
+    return row;
 }
 
 function getSelectedRadio() {
