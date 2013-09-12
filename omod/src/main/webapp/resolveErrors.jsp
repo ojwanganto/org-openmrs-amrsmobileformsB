@@ -401,7 +401,78 @@ function buildTextArea(label, id) {
     return row;
 }
 
+function buildFormViewRow(label,formxml) {
+    var row = document.createElement("tr");
+    var cell = document.createElement("th");
+    var cell2 = document.createElement("td");
+    var celllabel = document.createTextNode(label + ": ");
 
+    var button = document.createElement("input");
+    button.setAttribute("type", "button");
+    button.setAttribute("value", "Show Form");
+    button.setAttribute("id", "btnshowformxml");
+
+
+    cell.appendChild(celllabel);
+    cell2.appendChild(button);
+
+    row.appendChild(cell);
+    row.appendChild(cell2);
+
+    return row;
+}
+
+function fillFormXmlDiv(xmldata){
+    alert("JJJJJJJJJJJJJJJJJJJJJJJJJJ") ;
+    $j("#formviewdialog").html(xmldata);
+
+        $j("#formviewdialog").dialog({
+            height: 600,
+            width: 1000,
+
+            modal: false,
+            buttons: {
+                "Close": function () {
+
+                    alert('Closed') ;
+                },
+                close: closeFunction,
+                Cancel: function () {
+                    $j(this).dialog("close");
+                }
+            }
+        });
+
+
+
+      ///Add jquery
+    $j("btnshowformxml").live("click", function () {
+
+       // $j("#formviewdialog").html(xmldata);
+       alert('Jkied') ;
+        $j("#formviewdialog").dialog({
+            height: 600,
+            width: 1000,
+
+            modal: false,
+            buttons: {
+                "Close": function () {
+
+                    alert('Closed') ;
+                },
+                close: closeFunction,
+                Cancel: function () {
+                    $j(this).dialog("close");
+                }
+            }
+        });
+
+
+        });
+
+
+        //
+}
 /* Displays a summary dialog window with error details plus a provision to comment on an error
  */
 
@@ -434,7 +505,11 @@ function generate_table(data, bodyDiv, option) {
 
     var errdetails = buildRowWithElement("Error Details", data.errorDetails);
 
+    var formname = buildRowWithElement("XML Form", data.formName);
+
     var comment = buildTextArea("Comment", "comment");
+
+    var comment2 =buildFormViewRow("View Form", "SubmittedFormXml",data.formName)
 
     tblBody.appendChild(pname);
     tblBody.appendChild(pid);
@@ -452,7 +527,10 @@ function generate_table(data, bodyDiv, option) {
     tblBody.appendChild(errdetails);
 
 
+    tblBody.appendChild(formname);
+
     tblBody.appendChild(comment);
+    tblBody.appendChild(comment2);
 
     tbl.appendChild(tblBody);
 
@@ -516,6 +594,7 @@ function generate_ResolveError_table(data) {
     tblBody.appendChild(totaleligible);
     tblBody.appendChild(providerId);
     tblBody.appendChild(errdetails);
+    tblBody.appendChild(formname);
     tbl.appendChild(tblBody);
     body.appendChild(tbl);
     tbl.setAttribute("border", "0");
@@ -598,6 +677,9 @@ function clearElements(){
 
 </div>
 
+
+<div class="box" id="formviewdialog" title="Submitted Form" style="display:none;">
+</div>
 <div class="box" id="resolveError" title="Error Resolution Dialog" style="display:none;">
 
     <div id="resolveErrorTable">
@@ -711,6 +793,7 @@ function clearElements(){
 
                 </td>
             </tr>
+
         </table>
     </div>
 </div>
