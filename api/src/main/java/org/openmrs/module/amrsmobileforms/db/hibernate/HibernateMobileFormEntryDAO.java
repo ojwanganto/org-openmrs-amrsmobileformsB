@@ -231,4 +231,43 @@ public class HibernateMobileFormEntryDAO implements MobileFormEntryDAO {
 		crit.setProjection(Projections.rowCount());
 		return (Number) crit.uniqueResult();
 	}
+
+    public List<MobileFormHousehold> getBatchMobileFormHouseHolds(Integer start, Integer length, String query){
+        Criteria crit = getHouseHoldsCriteria(query);
+
+        crit.setFirstResult(start);
+        if (length != null) {
+            crit.setMaxResults(length);
+        }
+        crit.addOrder(Order.asc("dateCreated"));
+
+        return crit.list();
+
+
+
+    }
+
+    private Criteria getHouseHoldsCriteria(String query) {
+        Criteria crit = sessionFactory.getCurrentSession().createCriteria(MobileFormHousehold.class);
+        String idQuery = StringUtils.isNumeric(query) ? "%" + query + "%" : "";
+
+        if (query != null && !query.isEmpty()) {
+            Criterion disjunction = Restrictions.disjunction()
+
+                    .add(Restrictions.like("householdIdentifier", query, MatchMode.ANYWHERE))
+                    .add(Restrictions.like("location", query, MatchMode.ANYWHERE))
+                    .add(Restrictions.like("district", query, MatchMode.ANYWHERE))
+                    .add(Restrictions.like("sublocation", query, MatchMode.ANYWHERE));
+
+            crit.add(disjunction);
+        }
+
+        return crit;
+    }
+
+    public Number countHouseholds(String query) {
+        Criteria crit = getHouseHoldsCriteria(query);
+        crit.setProjection(Projections.rowCount());
+        return (Number) crit.uniqueResult();
+    }
 }
