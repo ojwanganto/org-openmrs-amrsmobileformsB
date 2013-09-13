@@ -449,35 +449,8 @@ function fillFormXmlDiv(xmldata){
 
 
 }
-function ShowXformDiv() {
-
-    alert("shown")
-}
-///Add jquery
-$j("#btnshowformxml").on("click", function (e) {
-    e.preventDefault();
-    // $j("#formviewdialog").html(xmldata);
-    alert('Jkied') ;
-    $('#formviewdialog').modal('show');
-    $j("#formviewdialog").dialog({
-        height: 600,
-        width: 1000,
-
-        modal: false,
-        buttons: {
-            "Close": function () {
-
-                alert('Closed') ;
-            },
-            close: closeFunction,
-            Cancel: function () {
-                $j(this).dialog("close");
-            }
-        }
-    });
 
 
-});
 
 
 //
