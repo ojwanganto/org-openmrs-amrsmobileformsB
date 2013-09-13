@@ -335,4 +335,12 @@ public class MobileFormEntryServiceImpl implements MobileFormEntryService {
 	public Number countErrors(String query) {
 		return dao.countErrors(query);
 	}
+
+    public Number countHouseholds(String query) {
+        return dao.countHouseholds(query);
+    }
+
+    public List<MobileFormHousehold> getBatchMobileFormHouseHolds(Integer start, Integer length, String query) {
+        return dao.getBatchMobileFormHouseHolds(start, length, query) ;
+    }
 }

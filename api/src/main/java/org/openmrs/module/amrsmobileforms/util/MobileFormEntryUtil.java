@@ -1,14 +1,11 @@
 package org.openmrs.module.amrsmobileforms.util;
 
-import java.io.File;
+import java.io.*;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -16,10 +13,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Patient;
-import org.openmrs.Location;
-import org.openmrs.Person;
-import org.openmrs.User;
+
+import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.amrsmobileforms.Economic;
@@ -36,6 +31,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 /**
  * Provides utilities needed when processing mobile forms.
  *
@@ -450,7 +447,7 @@ public class MobileFormEntryUtil {
 	 * @param type
 	 * @return
 	 */
-	private static String formatGps(double coordinates, String type) {
+	public static String formatGps(double coordinates, String type) {
 		String location = Double.toString(coordinates);
 		String degreeSign = "\u00B0";
 
@@ -668,4 +665,5 @@ public class MobileFormEntryUtil {
 			log.error(e.getMessage(), e);
 		}
 	}
+
 }

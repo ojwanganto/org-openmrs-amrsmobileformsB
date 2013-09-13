@@ -58,4 +58,8 @@ public interface MobileFormEntryDAO {
 	public List<MobileFormEntryError> getErrorBatch(Integer start, Integer length, String query);
 
 	public Number countErrors(String query);
+
+    public Number countHouseholds(String query);
+
+    public List<MobileFormHousehold> getBatchMobileFormHouseHolds(Integer start, Integer length, String query) ;
 }
