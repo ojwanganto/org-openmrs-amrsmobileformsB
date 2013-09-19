@@ -65,6 +65,7 @@ public class MobileFormEntryErrorModel extends MobileFormEntryError {
 
 		if (getFormName() != null && getFormName().length() > 0) {
 			try {
+
 				Document formDataDoc = getDocumentForErrorQueueItem(getFormName());
 				XPath xp = getXPathFactory().newXPath();
 
@@ -293,7 +294,9 @@ public class MobileFormEntryErrorModel extends MobileFormEntryError {
 	public Document getDocumentForErrorQueueItem(String formData) throws Exception {
 		DocumentBuilderFactory dbf = getDocumentBuilderFactory();
 		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document doc = db.parse(IOUtils.toInputStream(formData));
+        /* check for special characters using this
+        replaceAll("[^\\x20-\\x7e]", "");*/
+		Document doc = db.parse(IOUtils.toInputStream(formData.replaceAll("[^\\x20-\\x7e]", "")));
 		return doc;
 	}
 

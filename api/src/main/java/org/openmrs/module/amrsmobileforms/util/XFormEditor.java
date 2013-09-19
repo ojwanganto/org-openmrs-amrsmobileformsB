@@ -22,6 +22,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.amrsmobileforms.MobileFormEntryConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -66,6 +67,7 @@ public class XFormEditor {
 			XPathFactory xpf = XPathFactory.newInstance();
 			XPath xp = xpf.newXPath();
 
+
 			Node editNode = (Node) xp.evaluate(nodePath, doc, XPathConstants.NODE);
 			if (editNode == null) {
 				//try to get parent
@@ -75,6 +77,7 @@ public class XFormEditor {
 					parentNode.appendChild(editNode);
 					editNode.setTextContent(nodeValue);
 				}
+
 			} else {
 				editNode.setTextContent(nodeValue);
 			}
@@ -84,6 +87,7 @@ public class XFormEditor {
 			}
 
 		} catch (Exception ex) {
+            ex.printStackTrace();
 			log.warn("could not edit the node.", ex);
 		}
 

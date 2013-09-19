@@ -14,6 +14,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.amrsmobileforms.*;
 import org.openmrs.module.amrsmobileforms.util.MobileFormEntryUtil;
 import org.openmrs.module.amrsmobileforms.util.XFormEditor;
+import org.openmrs.util.OpenmrsUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -183,15 +184,25 @@ public class DWRAMRSMobileFormsService {
                     return statusInfo;
 
                 } else {
+
                     if (XFormEditor.editNode(filePath,
                             MobileFormEntryConstants.PATIENT_NODE + "/" + MobileFormEntryConstants.PATIENT_HOUSEHOLD_IDENTIFIER, householdId)) {
                         // put form in queue for normal processing
-                        moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
 
+                        if (OpenmrsUtil.nullSafeEquals(getFormType(errorItem.getFormName()), "household")) {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsDropDir().getAbsolutePath(), errorItem);
+                        } else {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                        }
                         statusInfo.add(1);
                         statusInfo.add("Patient-Household link creation was successfull");
                         return statusInfo;
 
+                    }
+                    else {
+                        statusInfo.add(0);
+                        statusInfo.add("could not update form details!");
+                        return statusInfo;
                     }
                 }
             } else if ("assignBirthdate".equals(errorItemAction)) {
@@ -205,7 +216,11 @@ public class DWRAMRSMobileFormsService {
                         if (XFormEditor.editNode(filePath,
                                 MobileFormEntryConstants.PATIENT_NODE + "/" + MobileFormEntryConstants.PATIENT_BIRTHDATE, formattedDate)) {
                             // put form in queue for normal processing
-                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                            if (OpenmrsUtil.nullSafeEquals(getFormType(errorItem.getFormName()), "household")) {
+                                moveAndDeleteError(MobileFormEntryUtil.getMobileFormsDropDir().getAbsolutePath(), errorItem);
+                            } else {
+                                moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                            }
 
                             statusInfo.add(1);
                             statusInfo.add("Birth Date assigned successfully");
@@ -233,7 +248,11 @@ public class DWRAMRSMobileFormsService {
                 if (patientIdentifier != null && patientIdentifier.trim() != "") {
                     if (reverseNodes(filePath, patientIdentifier)) {
                         // put form in queue for normal processing
-                        moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                        if (OpenmrsUtil.nullSafeEquals(getFormType(errorItem.getFormName()), "household")) {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsDropDir().getAbsolutePath(), errorItem);
+                        } else {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                        }
 
                         statusInfo.add(1);
                         statusInfo.add("The new Patient ID was assigned successfully");
@@ -249,26 +268,54 @@ public class DWRAMRSMobileFormsService {
                 }
             } else if ("linkProvider".equals(errorItemAction)) {
                 if (providerId != null && providerId.trim() != "") {
+
+                    //edit node with the right provider id using the provided system/person id
+                    providerId =Context.getUserService().getUser(Integer.parseInt(providerId)).getSystemId() ;
+
+                    if (OpenmrsUtil.nullSafeEquals(getFormType(errorItem.getFormName()), "household")) {
+                        String encounterNodeToEdit=  MobileFormEntryConstants.HOUSEHOLD_PREFIX +MobileFormEntryConstants
+                                .HOUSEHOLD_INDIVIDUALS_PREFIX+"/individual/encounter/encounter.provider_id";
+
+                        String surveyNodeToEdit = MobileFormEntryConstants.SURVEY_PREFIX + "/" + MobileFormEntryConstants
+                                .SURVEY_PROVIDER_ID;
+
+                        if (XFormEditor.editNode(filePath,surveyNodeToEdit,providerId) && XFormEditor.editNode
+                                (filePath,encounterNodeToEdit,providerId) ) {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsDropDir().getAbsolutePath(), errorItem);
+                            statusInfo.add(1);
+                            statusInfo.add("Error-Provider link created successfully");
+                            return statusInfo;
+                        }
+                        else {
+                            statusInfo.add(0);
+                            statusInfo.add("Could not link the form to the provider");
+                            return statusInfo;
+                        }
+                    }
+                    else {
+
+                        String encounterNodeToEdit = MobileFormEntryConstants.ENCOUNTER_NODE + "/" +
+                                MobileFormEntryConstants
+                                .ENCOUNTER_PROVIDER;
+                        if (XFormEditor.editNode(filePath,encounterNodeToEdit,providerId)){
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                            statusInfo.add(1);
+                            statusInfo.add("Error-Provider link created successfully");
+                            return statusInfo;
+                        }
+                        else {
+                            statusInfo.add(0);
+                            statusInfo.add("Could not link the form to the provider");
+                            return statusInfo;
+                        }
+
+                    }
+
                     //providerId = Context.getUserService().getUser(Integer.parseInt(providerId)).getSystemId();
-                    if (XFormEditor.editNode(filePath,
-                            MobileFormEntryConstants.ENCOUNTER_NODE + "/" + MobileFormEntryConstants.ENCOUNTER_PROVIDER, providerId)) {
-                        // put form in queue for normal processing
-                        moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
-
-                        statusInfo.add(1);
-                        statusInfo.add("Error-Provider link created successfully");
-                        return statusInfo;
-                    }
-                    else{
-                        statusInfo.add(0);
-                        statusInfo.add("Could not link the form to the provider");
-                        return statusInfo;
-                    }
-                } else {
-                    //httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "(Null) Invalid provider ID");
-
+                }
+                else{
                     statusInfo.add(0);
-                    statusInfo.add("You entered an empty Provider Id");
+                    statusInfo.add("A null provider was submitted");
                     return statusInfo;
                 }
             }else if ("linkPatient".equals(errorItemAction)) {
@@ -279,7 +326,11 @@ public class DWRAMRSMobileFormsService {
                     if (XFormEditor.editNode(filePath,
                             MobileFormEntryConstants.PATIENT_NODE + "/" + MobileFormEntryConstants.PATIENT_ID, patientId.toString())) {
                         // put form in queue for normal processing
-                        moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                        if (OpenmrsUtil.nullSafeEquals(getFormType(errorItem.getFormName()), "household")) {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsDropDir().getAbsolutePath(), errorItem);
+                        } else {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                        }
 
                         log.info("The system managed to find the following patient: "+patientId);
                         statusInfo.add(1);
@@ -302,7 +353,11 @@ public class DWRAMRSMobileFormsService {
                 }
             } else if ("createPatient".equals(errorItemAction)) {
                 // put form in queue for normal processing
-                moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                if (OpenmrsUtil.nullSafeEquals(getFormType(errorItem.getFormName()), "household")) {
+                    moveAndDeleteError(MobileFormEntryUtil.getMobileFormsDropDir().getAbsolutePath(), errorItem);
+                } else {
+                    moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                }
 
                 statusInfo.add(1);
                 statusInfo.add("Patient created successfully");
@@ -345,7 +400,11 @@ public class DWRAMRSMobileFormsService {
                             MobileFormEntryConstants.HOUSEHOLD_PREFIX + MobileFormEntryConstants.HOUSEHOLD_INDIVIDUALS_PREFIX,
                             "patient/" + MobileFormEntryConstants.PATIENT_HOUSEHOLD_IDENTIFIER, householdIdentifier)) {
                         // drop form in queue for normal processing
-                        moveAndDeleteError(MobileFormEntryUtil.getMobileFormsDropDir().getAbsolutePath(), errorItem);
+                        if (OpenmrsUtil.nullSafeEquals(getFormType(errorItem.getFormName()), "household")) {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsDropDir().getAbsolutePath(), errorItem);
+                        } else {
+                            moveAndDeleteError(MobileFormEntryUtil.getMobileFormsQueueDir().getAbsolutePath(), errorItem);
+                        }
                         statusInfo.add(1);
                         statusInfo.add("The new Household ID was assigned successfully");
                         return statusInfo;
@@ -379,6 +438,7 @@ public class DWRAMRSMobileFormsService {
 
         statusInfo.add(2);
         statusInfo.add("Please, you are not authenticated to do this");
+
         return statusInfo;
     }
 
@@ -433,19 +493,35 @@ public class DWRAMRSMobileFormsService {
     /**
      * Stores a form in a specified folder
      */
-    private static void saveForm(String oldFormPath, String newFormPath) {
+    private static boolean saveForm(String oldFormPath, String newFormPath) {
+
         try {
             if (oldFormPath != null) {
                 File file = new File(oldFormPath);
+                File newDestination = new File(newFormPath);
 
                 //move the file to specified new directory
-                file.renameTo(new File(newFormPath));
+                /*check to see if the new file path exists. renameTo does nothing if same path is encountered*/
+                if(newDestination.exists())
+                    newDestination.deleteOnExit();//safely deletes the file.
+
+                if(file.renameTo(new File(newFormPath))){
+                    log.info("Moving error file to drop directory was successful");
+                    return true;
+                }
+                else {
+                    log.info("Failed to move file to drop directory");
+                    return false;
+                }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage(), e);
         }
+        return false;
 
     }
+
 
     /**
      *
@@ -464,9 +540,14 @@ public class DWRAMRSMobileFormsService {
         // find error location
         String filePath = MobileFormEntryUtil.getMobileFormsErrorDir().getAbsolutePath() + error.getFormName();
         // put form in queue for normal processing
-        saveForm(filePath, destination + error.getFormName());
-        // delete the mobileformentry error queue item
-        getMobileFormEntryService().deleteError(error);
+        if(saveForm(filePath, destination + error.getFormName())){
+            // delete the mobileformentry error queue item
+            getMobileFormEntryService().deleteError(error);
+        }
+        else{
+            log.error("Could not complete error resolution process");
+        }
+
     }
 
     /*
