@@ -159,7 +159,7 @@ $j(document).ready(function () {
         window.open("addressdownload.htm?search=" + searchValues, 'Download csv');
         return false;
     });
-    text
+
 
 
 });
