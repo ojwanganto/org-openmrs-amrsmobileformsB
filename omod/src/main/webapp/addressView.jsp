@@ -16,8 +16,7 @@
 <openmrs:htmlInclude file="/moduleResources/amrsmobileforms/css/smoothness/jquery-ui-1.8.16.custom.css"/>
 <openmrs:htmlInclude file="/moduleResources/amrsmobileforms/css/dataTables_jui.css"/>
 
-
-<h2><spring:message code="amrsmobileforms.householdLocAddresses.title"/></h2>
+<h2><spring:message code="amrsmobileforms.hAddresses.title"/></h2>
 <style type="text/css">
     .tblformat tr:nth-child(odd) td {
         background-color: #eee;
@@ -159,7 +158,7 @@ $j(document).ready(function () {
         window.open("addressdownload.htm?search=" + searchValues, 'Download csv');
         return false;
     });
-    text
+
 
 
 });
