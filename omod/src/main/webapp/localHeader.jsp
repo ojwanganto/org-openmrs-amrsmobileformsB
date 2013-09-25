@@ -50,5 +50,13 @@
 				<spring:message code="amrsmobileforms.sync.title"/>
 			</a>
 		</li>
+    </openmrs:hasPrivilege>
+
+        <openmrs:hasPrivilege privilege="View Mobile Form HouseHolds">
+            <li <c:if test='<%= request.getRequestURI().contains("/amrsmobileforms/addressView") %>'>class="active"</c:if>>
+            <a href="${pageContext.request.contextPath}/module/amrsmobileforms/addressView.list">
+                <spring:message code="amrsmobileforms.hAddresses.title"/>
+            </a>
+            </li>
 	</openmrs:hasPrivilege>
 </ul>
