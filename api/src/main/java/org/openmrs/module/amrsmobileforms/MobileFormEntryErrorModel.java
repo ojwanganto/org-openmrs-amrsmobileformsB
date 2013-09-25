@@ -67,6 +67,7 @@ public class MobileFormEntryErrorModel extends MobileFormEntryError {
 			try {
 
 				Document formDataDoc = getDocumentForErrorQueueItem(getFormName());
+
 				XPath xp = getXPathFactory().newXPath();
 
                if ("household".equals(errorType)) {
@@ -105,6 +106,7 @@ public class MobileFormEntryErrorModel extends MobileFormEntryError {
 
 			} catch (Exception e) {
 				log.warn("Unable to get xml document from formData for formentryerror with id: " + error.getMobileFormEntryErrorId(), e);
+                e.printStackTrace();
 			}
 		}
 	}

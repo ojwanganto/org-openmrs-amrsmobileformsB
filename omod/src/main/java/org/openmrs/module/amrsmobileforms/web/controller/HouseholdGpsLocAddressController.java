@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.amrsmobileforms.MobileFormEntryService;
 import org.openmrs.module.amrsmobileforms.MobileFormHousehold;
@@ -98,9 +99,6 @@ public class HouseholdGpsLocAddressController {
 
 
 
-    //
-
-
         @RequestMapping(value="module/amrsmobileforms/addressdownload")
         public void downloadCSV( HttpServletResponse response,HttpServletRequest request,
                 @RequestParam(required=false, value="search") String searchStr
@@ -138,9 +136,29 @@ public class HouseholdGpsLocAddressController {
             for (MobileFormHousehold household : listMobileFormHouseholds) {
 
                 stringBuilderContents=new StringBuilder();
+                String longitude=null;
+                String latitude= null;
                 String[] sa = household.getGpsLocation().split(" ");
-                String longitude= MobileFormEntryUtil.formatGps(Double.parseDouble(sa[1]),"lon");
-                String latitude=  MobileFormEntryUtil.formatGps(Double.parseDouble(sa[0]), "lat");
+
+
+                if((household.getGpsLocation().contains("\""))||(household.getGpsLocation().contains("\'"))){
+                        longitude=sa[1];
+                        latitude= sa[0];
+
+                }
+                else{
+                    //format if the gps was not formatted
+                     if(sa.length==2){
+                        if((!StringUtils.isEmpty(sa[0]))&&(!StringUtils.isEmpty(sa[1]))){
+                        longitude= MobileFormEntryUtil.formatGps(Double.parseDouble(sa[1]),"lon");
+                        latitude=  MobileFormEntryUtil.formatGps(Double.parseDouble(sa[0]), "lat");
+                        }
+                     } else {
+
+                         longitude="Invalid GPS "+household.getGpsLocation();
+                         latitude= "Invalid GPS "+household.getGpsLocation();
+                     }
+                }
                 stringBuilderContents.append("#"+household.getHouseholdIdentifier()+"#").append(",").append("#"+household.getDistrict()+"#").append(",").append("#"+household.getLocation()+"#").append(",").append("#"+household.getSublocation()+"#").append(",").append("#"+longitude+"#").append(",").append("#"+latitude+"#").append(",");
                 out.write(stringBuilderContents.toString());
                 out.write("\n");
