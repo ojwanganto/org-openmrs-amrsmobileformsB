@@ -46,7 +46,7 @@ public class MobileFormEntryAdminExt extends AdministrationSectionExt {
 		map.put("module/amrsmobileforms/householdMappings.list", "amrsmobileforms.householdMappings");
 		map.put("module/amrsmobileforms/resolveErrors.list", "amrsmobileforms.resolveErrors.title");
 		map.put("module/amrsmobileforms/syncLog.list", "amrsmobileforms.sync.title");
-        map.put("module/amrsmobileforms/addressView.list", "amrsmobileforms.householdLocAddresses.title");
+        map.put("module/amrsmobileforms/addressView.list", "amrsmobileforms..hAddresses.title");
 
 		return map;
 	}
