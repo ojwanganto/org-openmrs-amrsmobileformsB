@@ -60,6 +60,7 @@ public class MobileFormQueueProcessor {
 		MobileFormEntryService mfes = (MobileFormEntryService) Context.getService(MobileFormEntryService.class);
         String providerId=null;
         String locationId=null;
+        String providerSystemId=null;
 
 		try {
 			docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -78,13 +79,14 @@ public class MobileFormQueueProcessor {
 
             providerId = xp.evaluate(MobileFormEntryConstants.SURVEY_PROVIDER_ID, surveyNode);
             providerId=providerId.trim();
+            providerSystemId=MobileFormEntryUtil.getActualProviderId(providerId);
 			// check household identifier and gps were entered correctly
 			if (StringUtils.isBlank(householdIdentifier) || StringUtils.isBlank(householdGps)) {
 				log.debug("Null household identifier or GPS");
 				saveFormInError(queue.getFileSystemUrl());
 				mfes.saveErrorInDatabase(MobileFormEntryUtil.
 					createError(getFormName(queue.getFileSystemUrl()), "Error processing household",
-					"This household has no identifier or GPS specified", providerId,locationId ));
+					"This household has no identifier or GPS specified", providerSystemId,locationId ));
 				return;
 			}
 
@@ -98,7 +100,7 @@ public class MobileFormQueueProcessor {
 				saveFormInError(queue.getFileSystemUrl());
 				mfes.saveErrorInDatabase(MobileFormEntryUtil.
 					createError(getFormName(queue.getFileSystemUrl()), "Error processing household",
-					"A duplicate household different from this one exists with the same identifier (" + householdIdentifier + ")", providerId,locationId ));
+					"A duplicate household different from this one exists with the same identifier (" + householdIdentifier + ")", providerSystemId,locationId ));
 			} else {
 
 				// get or create household
@@ -132,7 +134,7 @@ public class MobileFormQueueProcessor {
 			//put file in error table and move it to error directory
 			saveFormInError(queue.getFileSystemUrl());
 			mfes.saveErrorInDatabase(MobileFormEntryUtil.
-				createError(getFormName(queue.getFileSystemUrl()), "Error Parsing household form", t.getMessage(), providerId,locationId ));
+				createError(getFormName(queue.getFileSystemUrl()), "Error Parsing household form", t.getMessage(), providerSystemId,locationId ));
 		}
 	}
 

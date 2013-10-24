@@ -31,8 +31,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
+
 /**
  * Provides utilities needed when processing mobile forms.
  *
@@ -665,5 +664,44 @@ public class MobileFormEntryUtil {
 			log.error(e.getMessage(), e);
 		}
 	}
+
+
+    //Gets System id of the provider
+    public static String getActualProviderId(String userName) {
+        User userProvider;
+        Person personProvider;
+
+        // assume its a normal user-name or systemId formatted with a dash
+        userProvider = Context.getUserService().getUserByUsername(userName);
+        if (userProvider != null) {
+            return userProvider.getSystemId();
+        }
+
+        // next assume it is a internal providerId (Note this is a person_id
+        // not a user_id) and try again
+        try {
+            personProvider = Context.getPersonService().getPerson(Integer.parseInt(userName));
+            if (personProvider != null) {
+                userProvider = Context.getUserService().getUsersByPerson(personProvider,false).get(0);
+                return userProvider.getSystemId() ;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+
+        // now assume its a systemId without a dash: fix the dash and try again
+        if (userName != null && userName.trim() != "") {
+            if (userName.indexOf("-") == -1 && userName.length() > 1) {
+                userName = userName.substring(0, userName.length() - 1) + "-" + userName.substring(userName.length() - 1);
+                userProvider = Context.getUserService().getUserByUsername(userName);
+                if (userProvider != null) {
+                    return userProvider.getSystemId();
+                }
+            }
+        }
+
+        return null;
+    }
 
 }

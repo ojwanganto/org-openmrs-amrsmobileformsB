@@ -64,7 +64,7 @@ public class MobileFormUploadProcessor {
         String providerId=null;
         String locationId =null;
         String householdLocation=null;
-
+        String providerSystemId=null;
 
 		try {
 
@@ -91,7 +91,7 @@ public class MobileFormUploadProcessor {
 
             providerId = xp.evaluate(MobileFormEntryConstants.ENCOUNTER_PROVIDER, curNode);
             providerId=providerId.trim();
-
+            providerSystemId= MobileFormEntryUtil.getActualProviderId(providerId);
             householdLocation=xp.evaluate(MobileFormEntryConstants.ENCOUNTER_LOCATION, curNode);
 
             //Clean location id by removing decimal points
@@ -108,7 +108,7 @@ public class MobileFormUploadProcessor {
 					// form has no patient identifier but has names : move to error
 					saveFormInError(filePath);
 					mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath), "Error processing patient",
-							"Patient has no identifier, or the identifier provided is invalid", providerId, locationId));
+							"Patient has no identifier, or the identifier provided is invalid", providerSystemId, locationId));
 				}
 				return;
 			}
@@ -117,7 +117,7 @@ public class MobileFormUploadProcessor {
 			if (StringUtils.isBlank(familyName) || StringUtils.isBlank(givenName)) {
 				saveFormInError(filePath);
 				mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath), "Error processing patient",
-						"Patient has no valid names specified, Family Name and Given Name are required", providerId, locationId));
+						"Patient has no valid names specified, Family Name and Given Name are required", providerSystemId, locationId));
 				return;
 			}
 
@@ -126,7 +126,7 @@ public class MobileFormUploadProcessor {
 				// form has no valid provider : move to error
 				saveFormInError(filePath);
 				mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath), "Error processing patient form",
-						"Provider for this encounter is not provided, or the provider identifier provided is invalid", providerId, locationId));
+						"Provider for this encounter is not provided, or the provider identifier provided is invalid", providerSystemId, locationId));
 				return;
 			} else {
 				// TODO understand why this is being replaced with itself -- seems frivolous
@@ -139,7 +139,7 @@ public class MobileFormUploadProcessor {
 				Integer yearOfBirth = MobileFormEntryUtil.getBirthDateFromAge(doc);
 				if (yearOfBirth == null) {//patient has no valid birth-date
 					saveFormInError(filePath);
-					mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath), "Error processing patient", "Patient has no valid Birthdate", providerId, locationId));
+					mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath), "Error processing patient", "Patient has no valid Birthdate", providerSystemId, locationId));
 					return;
 				} else {
 					//fix birth-date from age
@@ -153,7 +153,7 @@ public class MobileFormUploadProcessor {
 			if (StringUtils.isBlank(householdId) || MobileFormEntryUtil.isNewHousehold(householdId)) {
 				saveFormInError(filePath);
 				mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath), "Error processing patient",
-						"Patient is not linked to household or household Id provided is invalid", providerId, locationId));
+						"Patient is not linked to household or household Id provided is invalid", providerSystemId, locationId));
 				return;
 			}
 
@@ -174,7 +174,7 @@ public class MobileFormUploadProcessor {
 					sb.append(".");
 
 					mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath),
-							"Error processing patient", sb.toString(), providerId, locationId));
+							"Error processing patient", sb.toString(), providerSystemId, locationId));
 					return;
 				}
 			}
@@ -199,7 +199,7 @@ public class MobileFormUploadProcessor {
 
 			// put file in error queue
 			saveFormInError(filePath);
-			mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath), "Error sending form to xform module", t.getMessage(), providerId, locationId));
+			mobileService.saveErrorInDatabase(MobileFormEntryUtil.createError(getFormName(filePath), "Error sending form to xform module", t.getMessage(), providerSystemId, locationId));
 		}
 	}
 
